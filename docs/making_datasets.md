@@ -4,7 +4,7 @@ When creating a finetune dataset, you can either gather samples of inputs and ou
 
 ## Gathering samples
 
-The simplest way to create a dataset is to gather a set of inputs and outputs using existing llms. A technique you can also use is to take an existing dataset (like Anthropic's HH for example) and use an llm to alter the outputs and/or inputs to create a new dataset in the tone/personality of you choosing. This is a good way to create a dialogue style dataset for a specific domain, like a specific company or a specific person. You can also generate datasets using few shot templates with a desired task/api usage and have an llm generate the outputs for you (inputs too if you'd like). (Examples coming soon)
+The simplest way to create a dataset is to gather a set of inputs and outputs using existing llms. A technique you can also use is to take an existing dataset (like Anthropic's HH for example) and use an llm to alter the outputs and/or inputs to create a new dataset in the tone/personality of you choosing. This is a good way to create a dialogue style dataset for a specific domain, like a specific company or a specific person. You can also generate datasets using few shot templates with a desired task/api usage and have an llm generate the outputs for you (inputs too if you'd like). (Examples of this are in the [examples](examples/) folder
 
 ## Training a model to complete prompts
 

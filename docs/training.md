@@ -3,7 +3,7 @@
 
 ## Requirements
 If not using multi-gpu you should be able to download the requirements from pip but if you want to use multi-gpu you need to install the requirements from their github repos.
-- transformers `pip install transformers` or install from https://github.com/huggingface/transformers `pip install git+https://github.com/huggingface/transformers.git` (if using flash attention you need to install from source)
+- transformers `pip install transformers` or install from https://github.com/huggingface/transformers `pip install git+https://github.com/huggingface/transformers.git` (if using flash attention you need to git clone the repo, edit the `modeling_llama.py` file, and then install from the local repo)
 - peft `pip install peft` or install from https://github.com/huggingface/peft `pip install git+https://github.com/huggingface/peft.git`
 - bitsandbytes `pip install bitsandbytes` if linux you're done, if windows you need to do the following steps:
     - download [libbitsandbytes_cuda116.dll](https://github.com/DeXtmL/bitsandbytes-win-prebuilt)
