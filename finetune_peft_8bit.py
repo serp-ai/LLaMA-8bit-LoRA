@@ -182,7 +182,7 @@ def main():
 
     ### Prepare dataset
 
-    # Use this function to concatenate all texts from our dataset and generate chunks of block_size.
+    # Use this function to concatenate all texts from your dataset and generate chunks of block_size.
      # def group_texts(examples):
     #     # Concatenate all texts.
     #     concatenated_examples = {k: list(chain(*examples[k])) for k in examples.keys()}
@@ -208,7 +208,7 @@ def main():
         return sample
     
     tokenizer.add_bos_token = True
-    tokenizer.add_eos_token = False
+    tokenizer.add_eos_token = False # Uncomment if you concatenate all texts from your dataset and generate chunks of block_size.
     tokenizer.padding_side = "left"
     tokenizer.truncation_side = "left"
 
@@ -231,7 +231,7 @@ def main():
     columns = dataset["train"].features
     # Use this for simple exmaple samples (conversation turns with dialogue history, instructions/responses, etc.)
     dataset = dataset.map(lambda samples: tokenize(samples["chosen_sample"]), batched=True, remove_columns=columns)
-    # Use this to concatenate all texts from our dataset and generate chunks of block_size. (Books, etc.)
+    # Use this to concatenate all texts from your dataset and generate chunks of block_size. (Books, etc.)
     #dataset = dataset.map(lambda samples: tokenizer(samples["chosen_sample"], padding=False, add_special_tokens=True), batched=True, remove_columns=columns)
     #dataset = dataset.map(group_texts, batched=True)
 
