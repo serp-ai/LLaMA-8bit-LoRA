@@ -8,7 +8,7 @@ The simplest way to create a dataset is to gather a set of inputs and outputs us
 
 ## Training a model to complete prompts
 
-The other way to create a dataset is to train a model to complete prompts. This is a good way to create a dataset for creative writing, idea generation, or any other task where you want the model to finish your prompt is the way it was trained. To create these datasets you can just add start and end tokens to each body of text, concatenate them, chunk them by the desired sequence length, and train a model to predict the next token in the sequence.
+The other way to create a dataset is to train a model to complete prompts. This is a good way to create a dataset for creative writing, idea generation, or any other task where you want the model to finish your prompt in the way that it was trained. To create these datasets you can just add start and end tokens to each body of text, concatenate them, chunk them by the desired sequence length, and then train a model.
 
 ### Details
 - 30k - 50k samples is a good starting point for a dataset of this type. (10k or possibly less may also turn out well depending on the task and the quality of the data)
