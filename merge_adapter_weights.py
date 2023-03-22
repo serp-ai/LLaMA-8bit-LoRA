@@ -6,7 +6,7 @@ from typing import Optional
 import peft
 import torch
 from peft import PeftConfig, PeftModel
-from transformers import AutoModelForCausalLM, AutoTokenizer, HfArgumentParser
+from transformers import AutoModelForCausalLM, AutoTokenizer, HfArgumentParser, LlamaForCausalLM, LlamaTokenizer
 
 
 @dataclass
@@ -27,12 +27,12 @@ script_args = parser.parse_args_into_dataclasses()[0]
 
 peft_model_id = script_args.model_name
 peft_config = PeftConfig.from_pretrained(peft_model_id)
-model = AutoModelForCausalLM.from_pretrained(
+model = LlamaForCausalLM.from_pretrained(
     peft_config.base_model_name_or_path,
     return_dict=True,
     torch_dtype=torch.float16,
 )
-tokenizer = AutoTokenizer.from_pretrained(peft_config.base_model_name_or_path)
+tokenizer =LlamaTokenizer.from_pretrained(peft_config.base_model_name_or_path)
 
 # Load the Lora model
 model = PeftModel.from_pretrained(model, peft_model_id)

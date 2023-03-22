@@ -11,7 +11,7 @@ import transformers
 import accelerate
 from datasets import load_dataset
 from peft import LoraConfig, PeftConfig, PeftModel, get_peft_model, prepare_model_for_int8_training
-from transformers import AutoModelForCausalLM, AutoTokenizer, HfArgumentParser, TrainingArguments
+from transformers import AutoModelForCausalLM, AutoTokenizer, HfArgumentParser, TrainingArguments, LlamaTokenizer, LlamaForCausalLM, LlamaConfig
 
 from accelerate import init_empty_weights, infer_auto_device_map
 from transformers import AutoConfig, set_seed
@@ -96,8 +96,8 @@ def print_trainable_parameters(model):
 def get_device_map(model_name, id_=0, do_int8=True):
 
     with init_empty_weights():
-        config = AutoConfig.from_pretrained(model_name)
-        model = AutoModelForCausalLM.from_config(config)
+        config = LlamaConfig.from_pretrained(model_name)
+        model =  LlamaForCausalLM.from_config(config)
 
     d = {id_: "5000MiB"}
     d[1] = "4500MiB"
@@ -131,13 +131,13 @@ def main():
             device_map = {"": accelerate.Accelerator().process_index}
     else:
         device_map = "auto"
-    model = AutoModelForCausalLM.from_pretrained(
+    model =  LlamaForCausalLM.from_pretrained(
         model_args.model_name_or_path,
         load_in_8bit=True,
         device_map=device_map
     )
 
-    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, max_length=2048)
+    tokenizer = LlamaTokenizer.from_pretrained(model_args.model_name_or_path, max_length=2048)
     tokenizer.pad_token_id = tokenizer.eos_token_id
     tokenizer.pad_token = tokenizer.eos_token
 
