@@ -97,7 +97,7 @@ def get_device_map(model_name, id_=0, do_int8=True):
 
     with init_empty_weights():
         config = LlamaConfig.from_pretrained(model_name)
-        model =  LlamaForCausalLM.from_config(config)
+        model =  AutoModelForCausalLM.from_config(config)
 
     d = {id_: "5000MiB"}
     d[1] = "4500MiB"
