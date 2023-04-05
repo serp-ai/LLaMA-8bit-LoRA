@@ -108,7 +108,7 @@ def get_device_map(model_name, id_=0, do_int8=True):
     d[6] = "4500MiB"
     d[7] = "6000MiB"
     device_map = infer_auto_device_map(
-        model, max_memory=d, dtype=torch.int8 if do_int8 else torch.float16, no_split_module_classes=["BloomBlock", "OPTDecoderLayer", "LLaMADecoderLayer"]
+        model, max_memory=d, dtype=torch.int8 if do_int8 else torch.float16, no_split_module_classes=["BloomBlock", "OPTDecoderLayer", "LLaMADecoderLayer", "LlamaDecoderLayer"]
     )
     print(device_map)
     del model
