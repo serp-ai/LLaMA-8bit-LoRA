@@ -236,9 +236,11 @@ def main():
     #dataset = dataset.map(group_texts, batched=True)
 
 
-    model.gradient_checkpointing_enable()
+    # model.gradient_checkpointing_enable()
     tokenizer.padding = True
     # model = torch.compile(model) # pytorch 2.0 but doesn't seem to work yet? (Should increase speed)
+    # model.is_parallelizable = True # may need to uncomment for tensor parallel
+    # model.model_parallel = True # may need to uncomment for tensor parallel
     trainer = transformers.Trainer(
         model=model,
         train_dataset=dataset['train'],
