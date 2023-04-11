@@ -171,7 +171,7 @@ def main():
     target_modules = None
     target_modules = ['q_proj', 'k_proj', 'v_proj', 'o_proj'] # edit with your desired target modules
     config = LoraConfig(
-        r=data_args.r, lora_alpha=data_args.lora_alpha, target_modules=target_modules, lora_dropout=data_args.lora_dropout, bias="none", task_type="CAUSAL_LM"
+        r=model_args.r, lora_alpha=model_args.lora_alpha, target_modules=target_modules, lora_dropout=model_args.lora_dropout, bias="none", task_type="CAUSAL_LM"
     )
 
     model = get_peft_model(model, config)
