@@ -10,9 +10,9 @@ If not using multi-gpu you should be able to download the requirements from pip 
     - put libbitsandbytes_cuda116.dll in your bitsandbytes folder (usually in your python site-packages folder)
     - edit \bitsandbytes\cuda_setup\main.py:
         - search for:
-            - `if not torch.cuda.is_available(): return 'libsbitsandbytes_cpu.so', None, None, None, None`
+            - `libsbitsandbytes_cpu.so`
         - replace with:
-            - `if torch.cuda.is_available(): return 'libbitsandbytes_cuda116.dll', None, None, None, None`
+            - `libbitsandbytes_cuda116.dll`
         - search for this twice:
             - `self.lib = ct.cdll.LoadLibrary(binary_path)`
         - replace with:
