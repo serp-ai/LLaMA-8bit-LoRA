@@ -5,18 +5,8 @@
 If not using multi-gpu you should be able to download the requirements from pip but if you want to use multi-gpu you need to install the requirements from their github repos.
 - transformers `pip install transformers` or install from https://github.com/huggingface/transformers `pip install git+https://github.com/huggingface/transformers.git` (if using flash attention you need to git clone the repo, edit the `modeling_llama.py` file, and then install from the local repo)
 - peft `pip install peft` or install from https://github.com/huggingface/peft `pip install git+https://github.com/huggingface/peft.git`
-- bitsandbytes `pip install bitsandbytes` if linux you're done, if windows you need to do the following steps:
-    - download [libbitsandbytes_cuda116.dll](https://github.com/DeXtmL/bitsandbytes-win-prebuilt)
-    - put libbitsandbytes_cuda116.dll in your bitsandbytes folder (usually in your python site-packages folder)
-    - edit \bitsandbytes\cuda_setup\main.py:
-        - search for:
-            - `if not torch.cuda.is_available(): return 'libsbitsandbytes_cpu.so', None, None, None, None`
-        - replace with:
-            - `if torch.cuda.is_available(): return 'libbitsandbytes_cuda116.dll', None, None, None, None`
-        - search for this twice:
-            - `self.lib = ct.cdll.LoadLibrary(binary_path)`
-        - replace with:
-            - `self.lib = ct.cdll.LoadLibrary(str(binary_path))`
+- bitsandbytes `pip install bitsandbytes` if linux you're done, if windows follow the steps from this repo:
+    - https://github.com/jllllll/bitsandbytes-windows-webui
 
 ## Using custom datasets
 You can either edit the training script directly to load your desired data and process it in to the correct format or if it is a dataset available in datasets you can use the `--dataset_name` and edit the training script to use the correct dataset keys. The section to edit for custom data loading are around line 210 in `finetune_peft_8bit.py`.
@@ -34,14 +24,19 @@ Recommended starting parameters:
 
 Launch the training script with your desired parameters.
 
+(For LLaMA 2 if you get a 'private repo' issue add the flag `--use_auth_token=<huggingface_auth_token>` or login with the hugginface cli)
+
 Example launch command:
-`python finetune_peft_8bit.py --num_train_epochs=2 --model_name_or_path=decapoda-research/llama-7b-hf --model_output_dir=LLaMA/LoRA/7B --output_dir=LLaMA/LoRA/train/7B --block_size=600 --per_device_train_batch_size=2 --gradient_accumulation_steps=64 --fp16=true --logging_steps=1 --log_level=info --learning_rate=2.0e-04 --lr_scheduler_type=linear --warmup_ratio=0.06 --weight_decay=0.1 --optim=adamw_torch_fused --evaluation_strategy=steps --save_strategy=steps --eval_steps=400 --save_steps=400 --output_dir="LoRA" --save_total_limit=3 --load_best_model_at_end=True --dataset_name=Dahoas/full-hh-rlhf --r=64 --lora_alpha=32 --lora_dropout=0.05`
+`python finetune_peft_8bit.py --num_train_epochs=2 --model_name_or_path=meta-llama/Llama-2-7b-hf --model_output_dir=LLaMA/LoRA/7B --output_dir=LLaMA/LoRA/train/7B --block_size=600 --per_device_train_batch_size=2 --gradient_accumulation_steps=64 --fp16=true --logging_steps=1 --log_level=info --learning_rate=2.0e-04 --lr_scheduler_type=linear --warmup_ratio=0.06 --weight_decay=0.1 --optim=adamw_torch_fused --evaluation_strategy=steps --save_strategy=steps --eval_steps=400 --save_steps=400 --output_dir="LoRA" --save_total_limit=3 --load_best_model_at_end=True --dataset_name=Dahoas/full-hh-rlhf --r=64 --lora_alpha=32 --lora_dropout=0.05`
+
+4-bit training example:
+`python finetune_peft_8bit.py --num_train_epochs=1 --model_name_or_path=meta-llama/Llama-2-7b-hf --model_output_dir=LLaMA/LoRA/7B --output_dir=LLaMA/LoRA/train/7B --bits=4 --bf16 --quant_type=nf4 --double_quant=True --gradient_checkpointing=True --block_size=2048 --per_device_train_batch_size=4 --gradient_accumulation_steps=32 --logging_steps=1 --log_level=info --learning_rate=2.0e-04 --lr_scheduler_type=linear --warmup_ratio=0.06 --weight_decay=0.1 --optim=paged_adamw_32bit --evaluation_strategy=steps --save_strategy=steps --eval_steps=400 --save_steps=400 --output_dir="LoRA" --save_total_limit=3 --load_best_model_at_end=True --dataset_name=Dahoas/full-hh-rlhf --r=64 --lora_alpha=32 --lora_dropout=0.05 --max_grad_norm=0.3`
 
 Or if using multiple gpus (make sure you have the correct number of gpus in the `accelerate_config.yaml` file)
-`accelerate launch --config_file=accelerate_config.yaml finetune_peft_8bit.py --multi_gpu=True --tensor_parallel=False --num_train_epochs=2 --model_name_or_path=decapoda-research/llama-7b-hf --model_output_dir=LLaMA/LoRA/7B --output_dir=LLaMA/LoRA/train/7B --block_size=600 --per_device_train_batch_size=2 --gradient_accumulation_steps=8 --fp16=true --logging_steps=1 --log_level=info --learning_rate=2.0e-04 --lr_scheduler_type=linear --warmup_ratio=0.06 --weight_decay=0.1 --optim=adamw_torch_fused --evaluation_strategy=steps --save_strategy=steps --eval_steps=400 --save_steps=400 --output_dir="LoRA" --save_total_limit=3 --load_best_model_at_end=True --remove_unused_columns=False --dataset_name=Dahoas/full-hh-rlhf --r=64, --lora_alpha=32, --lora_dropout=0.05`
+`accelerate launch --config_file=accelerate_config.yaml finetune_peft_8bit.py --multi_gpu=True --tensor_parallel=False --num_train_epochs=2 --model_name_or_path=meta-llama/Llama-2-13b-hf --model_output_dir=LLaMA/LoRA/13B --output_dir=LLaMA/LoRA/train/13B --block_size=600 --per_device_train_batch_size=2 --gradient_accumulation_steps=8 --fp16=true --logging_steps=1 --log_level=info --learning_rate=2.0e-04 --lr_scheduler_type=linear --warmup_ratio=0.06 --weight_decay=0.1 --optim=adamw_torch_fused --evaluation_strategy=steps --save_strategy=steps --eval_steps=400 --save_steps=400 --output_dir="LoRA" --save_total_limit=3 --load_best_model_at_end=True --remove_unused_columns=False --dataset_name=Dahoas/full-hh-rlhf --r=64, --lora_alpha=32, --lora_dropout=0.05`
 
 Or if using multiple gpus and tensor parrallelism (go in to the main training file and edit the `get_device_map` function with your number of devices and desired memory allocation)
-`python finetune_peft_8bit.py --num_train_epochs=2 --multi_gpu=True --tensor_parallel=True --model_name_or_path=decapoda-research/llama-65b-hf --model_output_dir=LLaMA/LoRA/65B --output_dir=LLaMA/LoRA/train/65B --block_size=600 --per_device_train_batch_size=2 --gradient_accumulation_steps=64 --fp16=true --logging_steps=1 --log_level=info --learning_rate=2.0e-04 --lr_scheduler_type=linear --warmup_ratio=0.06 --weight_decay=0.1 --optim=adamw_torch_fused --evaluation_strategy=steps --save_strategy=steps --eval_steps=400 --save_steps=400 --output_dir="LoRA" --save_total_limit=3 --load_best_model_at_end=True --dataset_name=Dahoas/full-hh-rlhf --r=64 --lora_alpha=32 --lora_dropout=0.05`
+`python finetune_peft_8bit.py --num_train_epochs=2 --multi_gpu=True --tensor_parallel=True --model_name_or_path=meta-llama/Llama-2-70b-hf --model_output_dir=LLaMA/LoRA/70B --output_dir=LLaMA/LoRA/train/70B --block_size=600 --per_device_train_batch_size=2 --gradient_accumulation_steps=64 --fp16=true --logging_steps=1 --log_level=info --learning_rate=2.0e-04 --lr_scheduler_type=linear --warmup_ratio=0.06 --weight_decay=0.1 --optim=adamw_torch_fused --evaluation_strategy=steps --save_strategy=steps --eval_steps=400 --save_steps=400 --output_dir="LoRA" --save_total_limit=3 --load_best_model_at_end=True --dataset_name=Dahoas/full-hh-rlhf --r=64 --lora_alpha=32 --lora_dropout=0.05`
 
 
 ## Flash attention (optional - pytorch 2.0 required)
