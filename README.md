@@ -1,8 +1,8 @@
 # Chat LLaMA 
 
-8bit-LoRA
+8bit-LoRA or 4bit-LoRA
 
-Repository for training a LoRA for the LLaMA model on HuggingFace with 8-bit quantization. Research only.
+Repository for training a LoRA for the LLaMA (1 and 2) models on HuggingFace with 8-bit or 4-bit quantization. Research only for LLaMA 1, LLaMA 2 is open commercially.
 <br><br><br>
 👉 [Join our Discord Server](https://serp.ly/@serpai/discord) for updates, support & collaboration
 <br><br><br>
